@@ -1,3 +1,6 @@
 func test()
-	console.log("This should log.")
-test()
+	if true
+		func doTest()
+			console.log("This should log.")
+		return doTest
+test.doTest()

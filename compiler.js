@@ -55,6 +55,11 @@ compiler.compile = function(string, indent_string) {
 			parameters = parameters.replace(/:[A-Za-z_$][A-Za-z_$0-9]/g, '');
 			result += "function " + name + " (" + parameters + ") {\n";
 			expected_indent = true;
+		} else if(line.startsWith('if')) {
+			var clause = /if[\t ]+(.+)/.exec(line);
+			if(!clause) throw "Malformed if statement at line " + current;
+			result += "if (" + clause[1] + ") {\n"
+			expected_indent = true;
 		} else {
 			result += line + '\n';
 			expected_indent = false;

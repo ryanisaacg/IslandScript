@@ -1,5 +1,10 @@
 function test () {
-	console.log("This should log.")
+	if (true) {
+		function doTest () {
+			console.log("This should log.")
+		}
+		return doTest
 }
-test()
+}
+test.doTest()
 
