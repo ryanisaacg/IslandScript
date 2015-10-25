@@ -59,6 +59,11 @@ compiler.compile = function(string, indent_string) {
 			if(!clause) throw "Malformed if statement at line " + current;
 			result += "if (" + clause[1] + ") {\n"
 			expected_indent = true;
+		} else if(line.startsWith('while')) {
+			var clause = /while[\t ]+(.+)/.exec(line);
+			if(!clause) throw "Malformed while statement at line " + current;
+			result += "while (" + clause[1] + ") {\n"
+			expected_indent = true;
 		} else {
 			result += line + '\n';
 			expected_indent = false;
