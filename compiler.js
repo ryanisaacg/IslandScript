@@ -38,11 +38,11 @@ compiler.compile = function(string, indent_string) {
 		//Function declaration
 		if(line.startsWith('func')) {
 			var name = "", parameters = "";
-			//Extract function name
+			//Extract name
 			name = /^func ([A-Za-z_$][A-Za-z0-9_$]*)/.exec(line);
 			if(!name || !name[1]) throw "Illegal function name at line " + current;
 			name= name[1]
-			//Extract function parameters
+			//Extract parameters
 			parameters = /^func [A-Za-z_$][A-Za-z0-9_$]*[\t ]*[(](.*)[)]/.exec(line)
 			if(!parameters) throw "Illegal parameter construction at line " + current;
 			parameters = parameters[1]
