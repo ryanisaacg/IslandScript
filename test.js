@@ -1,5 +1,5 @@
 function test () {
-	In block
+	console.log("This should log.")
 }
-Not in block
+test()
 

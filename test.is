@@ -1,3 +1,3 @@
-func test() 
-	In block
-Not in block
+func test()
+	console.log("This should log.")
+test()
