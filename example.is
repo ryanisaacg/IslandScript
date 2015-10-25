@@ -1,0 +1,18 @@
+#Here's a comment
+#Note that types come after the name
+func add(x : num, y : num) : num
+	return x + y
+#If you actually do this, please never write code again
+func mult(x : num, y : num) : num
+	count : num = 0
+	result := 0 #Type inference, result will be num
+	while Math.abs(count) < Math.abs(y)
+		result = result + x
+		count += Math.abs(y) / y
+	return result
+func area(this : {Position, Size}) : num
+	
+trait Position ()
+	x : num, y : num
+trait Size ()
+	width : num, height : num
