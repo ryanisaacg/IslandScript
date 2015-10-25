@@ -13,6 +13,12 @@ compiler.num_indent = function(line, indent_string) {
 	}
 	return amt;
 }
+function multiply(string, amt) {
+	var result = "";
+	for(var i = 0; i < amt; i++)
+		result += string;
+	return result;
+}
 compiler.compile = function(string, indent_string) {
 	string = string.replace(/\r/g, '');
 	var lines = string.split('\n');
@@ -28,8 +34,8 @@ compiler.compile = function(string, indent_string) {
 		//Lack of necessary indent
 		if(indent < previous_indent && expected_indent)
 			throw "Expected indent at line " + current;
-		if(indent < previous_indent)
-			result += "}\n";
+		for(var i = 0; i < previous_indent - indent; i++)
+			result += multiply('\t', indent - i) + "}\n";
 		previous_indent = indent;
 		//Remove excess whitespace and comments
 		var line = lines[current].trim().replace(/#.*\n/g, '');
