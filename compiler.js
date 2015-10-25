@@ -39,8 +39,7 @@ compiler.compile = function(string, indent_string) {
 		previous_indent = indent;
 		//Remove excess whitespace and comments
 		var line = lines[current].trim().replace(/#.*\n/g, '');
-		for(var i = 0; i < indent; i++)
-			result += indent_string
+		result += multiply_string(indent_string, indent);
 		//Function declaration
 		if(line.startsWith('func')) {
 			var name = "", parameters = "";
