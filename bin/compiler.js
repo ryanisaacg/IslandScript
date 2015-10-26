@@ -23,12 +23,6 @@ function multiply_string (string, amt) {
 	return result;
 }
 function compile (string, indent_string) {
-	string = string.replace(/\r/g, '').replace(/\#/g, '//').replace(/\\\n/g, '\\\r');
-	var lines = string.split('\n');
-	var current = 0;
-	var result = "";
-	var previous_indent = 0, indent, expected_indent = false, sublines = 0;
-	var file_line = 1; //The line this code appears in for the source file
 	//Take out all literals so they are not manipulated as code
 	var string_literals = []
 	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([\/][^\/\n]*[\/])/;
@@ -41,6 +35,12 @@ function compile (string, indent_string) {
 	extract_literal(string_regex)
 	extract_literal(char_regex)
 	extract_literal(regex_regex)
+	string = string.replace(/\r/g, '').replace(/\#/g, '//').replace(/\\\n/g, '\\\r');
+	var lines = string.split('\n');
+	var current = 0;
+	var result = "";
+	var previous_indent = 0, indent, expected_indent = false, sublines = 0;
+	var file_line = 1; //The line this code appears in for the source file
 	for (current = 0;current < lines.length;current += 1) {
 		//Used this instead of compiler to allow for alternate implementations
 		indent = this.num_indent(lines[current], indent_string);
@@ -136,8 +136,21 @@ function isle_eval (string) {
 }
 compiler.eval = isle_eval
 //Quick testing code
-var fs = require('fs');
-var contents = fs.readFileSync('src/compiler.is', 'utf8');
-var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('../compiler.js', compiled, 'utf8')
-
+if (process.argv.length < 3) {
+	var readline = require('readline');
+	var rl = readline.createInterface({ 	input: process.stdin, 	output: process.stdout, 	});
+	rl.setPrompt('> ')
+	function handle_line (line) {
+		var out = compiler.eval(line)
+		rl.write(out)
+		rl.prompt()
+	}
+	rl.on('line', handle_line)
+	rl.prompt()
+}
+ else {
+	var fs = require('fs');
+	var contents = fs.readFileSync(process.argv[2], 'utf8');
+	var compiled = compiler.compile(contents, '\t');
+	fs.writeFileSync(process.argv[3] || 'a.js', compiled, 'utf8')
+}
