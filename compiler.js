@@ -74,9 +74,9 @@ compiler.compile = function(string, indent_string) {
 			result += "while (" + clause[1] + ") {\n"
 			expected_indent = true;
 		} else if (line.startsWith('for')) {
-			var params = /for[\t ]+([^;]+);[\t ]*([^;]+);[\t ]*([^;]+)/.exec(line);
+			var params = /for[\t ]*([^;]+);[\t ]*([^;]+);[\t ]*(.+)/.exec(line);
 			if(!params) throw "Malformed for statement at line " + file_line;
-			result += "for (" + params[1] + ";" + params[2] + ";" + params[3] + ") {";
+			result += "for (" + params[1] + ";" + params[2] + ";" + params[3] + ") {\n";
 			expected_indent = true;
 		} else {
 			result += line + '\n';
@@ -88,6 +88,6 @@ compiler.compile = function(string, indent_string) {
 }
 //Quick testing code
 var fs = require('fs');
-var contents = fs.readFileSync('test.is', 'utf8');
+var contents = fs.readFileSync('compiler.is', 'utf8');
 var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('test.js', compiled, 'utf8')
+fs.writeFileSync('out.js', compiled, 'utf8')
