@@ -25,17 +25,19 @@ function multiply_string (string, amt) {
 function compile (string, indent_string) {
 	//Take out all literals so they are not manipulated as code
 	var string_literals = []
-	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([\/][^\/\n]*[\/])/;
+	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([/][^/\n]*[/])/;
 	var result;
 	function extract_literal (regex) {
-		result = regex.exec(string);
-		string_literals.push(result[1]);
-		string = string.replace(result[0], "%%" + string_literals.length);
+		while (regex.test(string)) {
+			result = regex.exec(string);
+			string_literals.push(result[1]);
+			string = string.replace(result[0], "%%" + string_literals.length);
 	}
+}
 	extract_literal(string_regex)
 	extract_literal(char_regex)
 	extract_literal(regex_regex)
-	string = string.replace(/\r/g, '').replace(/\#/g, '//').replace(/\\\n/g, '\\\r');
+	string = string.replace(/\r/g, '').replace(/#/g, '//').replace(/\\\n/g, '\\\r');
 	var lines = string.split('\n');
 	var current = 0;
 	var result = "";
@@ -46,7 +48,7 @@ function compile (string, indent_string) {
 		indent = this.num_indent(lines[current], indent_string);
 		//Unexpected indent
 		if (indent > previous_indent && !expected_indent) {
-			throw "Unexpected indent at line " + file_line;
+			throw "Unexpected indent at line #" + file_line;
 		}
 		//Lack of necessary indent
 		if (indent <= previous_indent && expected_indent) {
@@ -132,25 +134,27 @@ function compile (string, indent_string) {
 }
 compiler.compile = compile
 function isle_eval (string) {
-	eval(this.compile(string))
+	eval(this.compile(string, '\t'))
 }
 compiler.eval = isle_eval
 //Quick testing code
 if (process.argv.length < 3) {
-	var readline = require('readline');
-	var rl = readline.createInterface({ 	input: process.stdin, 	output: process.stdout, 	});
-	rl.setPrompt('> ')
-	function handle_line (line) {
-		var out = compiler.eval(line)
-		rl.write(out)
-		rl.prompt()
-	}
-	rl.on('line', handle_line)
-	rl.prompt()
+	console.log("Missing input parameter.")
 }
+//	Currently non-functional REPL:
+//	var readline = require('readline');
+//	var rl = readline.createInterface({ //	input: process.stdin, //	output: process.stdout, //	});
+//	rl.setPrompt('> ')
+//	func handle_line(line)
+//		var out = compiler.eval(line)
+//		rl.write(out)
+//		rl.prompt()
+//	rl.on('line', handle_line)
+//	rl.prompt()
  else {
 	var fs = require('fs');
 	var contents = fs.readFileSync(process.argv[2], 'utf8');
 	var compiled = compiler.compile(contents, '\t');
 	fs.writeFileSync(process.argv[3] || 'a.js', compiled, 'utf8')
 }
+
