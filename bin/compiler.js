@@ -51,7 +51,6 @@ function compile (string, indent_string) {
 			sublines += 1;
 			line = line.replace('\\\r', '');
 		}
-		
 		result += multiply_string(indent_string, indent);
 		//Function declaration
 		if (line.startsWith('func')) {
@@ -112,10 +111,8 @@ function compile (string, indent_string) {
 			result += line + '\n';
 			expected_indent = false;
 		}
-		
 		file_line += 1 + sublines;
 	}
-	
 	return result;
 }
 compiler.compile = compile
@@ -125,6 +122,7 @@ function isle_eval (string) {
 compiler.eval = isle_eval
 //Quick testing code
 var fs = require('fs');
-var contents = fs.readFileSync('compiler.is', 'utf8');
+var contents = fs.readFileSync('src/compiler.is', 'utf8');
 var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('out.js', compiled, 'utf8')
+fs.writeFileSync('../compiler.js', compiled, 'utf8')
+

@@ -93,6 +93,6 @@ compiler.compile = function(string, indent_string) {
 }
 //Quick testing code
 var fs = require('fs');
-var contents = fs.readFileSync('compiler.is', 'utf8');
+var contents = fs.readFileSync('src/compiler.is', 'utf8');
 var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('out.js', compiled, 'utf8')
+fs.writeFileSync('bin/compiler.js', compiled, 'utf8')

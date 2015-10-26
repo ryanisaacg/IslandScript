@@ -17,7 +17,7 @@ func multiply_string(string, amt)
 	for var i = 0; i < amt; i++
 		result += string;
 	return result;
-func compile(string, indent_string) 
+func compile(string, indent_string)
 	string = string.replace(/\r/g, '').replace(/\\\n/g, '\\\r');
 	var lines = string.split('\n');
 	var current = 0;
@@ -42,19 +42,18 @@ func compile(string, indent_string)
 		while line.indexOf('\\\r') > 0
 			sublines += 1;
 			line = line.replace('\\\r', '');
-		
 		result += multiply_string(indent_string, indent);
 		//Function declaration
 		if line.startsWith('func')
 			var name = "", parameters = "";
 			//Extract name
 			name = /^func ([A-Za-z_$][A-Za-z0-9_$]*)/.exec(line);
-			if !name || !name[1] 
+			if !name || !name[1]
 				throw "Illegal function name at line " + file_line;
 			name= name[1]
 			//Extract parameters
 			parameters = /^func [A-Za-z_$][A-Za-z0-9_$]*[\t ]*[(](.*)[)]/.exec(line)
-			if !parameters 
+			if !parameters
 				throw "Illegal parameter construction at line " + file_line;
 			parameters = parameters[1]
 			parameters = parameters.replace(/:[A-Za-z_$][A-Za-z_$0-9]/g, '');
@@ -62,20 +61,20 @@ func compile(string, indent_string)
 			expected_indent = true;
 		 elif line.startsWith('if')
 			var clause = /if[\t ]+(.+)/.exec(line);
-			if !clause 
+			if !clause
 				throw "malformed if statement at line " + file_line;
 			result += "if (" + clause[1] + ") {\n"
 			expected_indent = true;
-		 elif line.startsWith('else') 
+		 elif line.startsWith('else')
 			result += " else {\n";
 			expected_indent = true;
 		 elif line.startsWith('elif')
 			var clause = /elif[\t ]+(.+)/.exec(line);
-			if !clause 
+			if !clause
 				throw "malformed elif statement at line " + file_line;
 			result += "else if (" + clause[1] + ") {\n"
 			expected_indent = true;
-		 elif line.startsWith('while') 
+		 elif line.startsWith('while')
 			var clause = /while[\t ]+(.+)/.exec(line);
 			if !clause
 				throw "Malformed while statement at line " + file_line;
@@ -87,12 +86,10 @@ func compile(string, indent_string)
 				throw "Malformed for statement at line " + file_line;
 			result += "for (" + params[1] + ";" + params[2] + ";" + params[3] + ") {\n";
 			expected_indent = true;
-		 else 
+		 else
 			result += line + '\n';
 			expected_indent = false;
-		
 		file_line += 1 + sublines;
-	
 	return result;
 compiler.compile = compile
 func isle_eval(string)
@@ -100,6 +97,6 @@ func isle_eval(string)
 compiler.eval = isle_eval
 //Quick testing code
 var fs = require('fs');
-var contents = fs.readFileSync('compiler.is', 'utf8');
+var contents = fs.readFileSync('src/compiler.is', 'utf8');
 var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('out.js', compiled, 'utf8')
+fs.writeFileSync('../compiler.js', compiled, 'utf8')
