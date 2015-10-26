@@ -4,8 +4,6 @@ function test () {
 			console.log("This should log numbers from 1 to 10.")
 			for (var i = 0;i < 10;i++) {
 				console.log(i)
-				i += 1
-				
 		}
 	}
 		return doTest
@@ -13,3 +11,4 @@ function test () {
 }
 test()()
 console.log("Some testing")
+
