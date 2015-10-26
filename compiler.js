@@ -62,7 +62,7 @@ compiler.compile = function(string, indent_string) {
 			expected_indent = true;
 		} else if(line.startsWith('if')) {
 			var clause = /if[\t ]+(.+)/.exec(line);
-			if(!clause) throw "Malformed if statement at line " + current;
+			if(!clause) throw "Malformed if statement at line " + file_line;
 			result += "if (" + clause[1] + ") {\n"
 			expected_indent = true;
 		} else if(line.startsWith('else')) {
@@ -70,7 +70,7 @@ compiler.compile = function(string, indent_string) {
 			expected_indent = true;
 		} else if(line.startsWith('while')) {
 			var clause = /while[\t ]+(.+)/.exec(line);
-			if(!clause) throw "Malformed while statement at line " + current;
+			if(!clause) throw "Malformed while statement at line " + file_line;
 			result += "while (" + clause[1] + ") {\n"
 			expected_indent = true;
 		} else if (line.startsWith('for')) {
