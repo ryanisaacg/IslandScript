@@ -20,7 +20,7 @@ function multiply_string(string, amt) {
 	return result;
 }
 compiler.compile = function(string, indent_string) {
-	string = string.replace(/\r/g, '').replace('#', '//').replace(/\\\n/g, '\\\r');
+	string = string.replace(/\r/g, '').replace(/#/g, '//').replace(/\\\n/g, '\\\r');
 	var lines = string.split('\n');
 	var current = 0;
 	var result = "";
