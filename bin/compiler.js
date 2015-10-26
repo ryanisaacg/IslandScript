@@ -23,12 +23,24 @@ function multiply_string (string, amt) {
 	return result;
 }
 function compile (string, indent_string) {
-	string = string.replace(/\r/g, '').replace(/\\\n/g, '\\\r');
+	string = string.replace(/\r/g, '').replace(/\#/g, '//').replace(/\\\n/g, '\\\r');
 	var lines = string.split('\n');
 	var current = 0;
 	var result = "";
 	var previous_indent = 0, indent, expected_indent = false, sublines = 0;
 	var file_line = 1; //The line this code appears in for the source file
+	//Take out all literals so they are not manipulated as code
+	var string_literals = []
+	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([\/][^\/\n]*[\/])/;
+	var result;
+	function extract_literal (regex) {
+		result = regex.exec(string);
+		string_literals.push(result[1]);
+		string = string.replace(result[0], "%%" + string_literals.length);
+	}
+	extract_literal(string_regex)
+	extract_literal(char_regex)
+	extract_literal(regex_regex)
 	for (current = 0;current < lines.length;current += 1) {
 		//Used this instead of compiler to allow for alternate implementations
 		indent = this.num_indent(lines[current], indent_string);
@@ -112,6 +124,9 @@ function compile (string, indent_string) {
 			expected_indent = false;
 		}
 		file_line += 1 + sublines;
+	}
+	while (string_literals.length > 0) {
+		result = result.replace('%%' + string_literals.length, string_literals.pop());
 	}
 	return result;
 }

@@ -1,9 +1,9 @@
 compiler = {}
-//startWith is ES6, and some versions of Node don't support it yet
+#startWith is ES6, and some versions of Node don't support it yet
 func startsWith(substr)
 	return this.lastIndexOf(substr, 0) === 0
 String.prototype.startsWith = startsWith
-//Counts the number of indents that lead the line
+#Counts the number of indents that lead the line
 func num_indent(line, indent_string)
 	var amt = 0;
 	var index = 0;
@@ -18,40 +18,51 @@ func multiply_string(string, amt)
 		result += string;
 	return result;
 func compile(string, indent_string)
-	string = string.replace(/\r/g, '').replace(/\\\n/g, '\\\r');
+	#Take out all literals so they are not manipulated as code
+	var string_literals = []
+	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([\/][^\/\n]*[\/])/;
+	var result;
+	func extract_literal(regex)
+		result = regex.exec(string);
+		string_literals.push(result[1]);
+		string = string.replace(result[0], "%%" + string_literals.length);
+	extract_literal(string_regex)
+	extract_literal(char_regex)
+	extract_literal(regex_regex)
+	string = string.replace(/\r/g, '').replace(/\#/g, '#').replace(/\\\n/g, '\\\r');
 	var lines = string.split('\n');
 	var current = 0;
 	var result = "";
 	var previous_indent = 0, indent, expected_indent = false, sublines = 0;
-	var file_line = 1; //The line this code appears in for the source file
+	var file_line = 1; #The line this code appears in for the source file
 	for current = 0; current < lines.length; current += 1
-		//Used this instead of compiler to allow for alternate implementations
+		#Used this instead of compiler to allow for alternate implementations
 		indent = this.num_indent(lines[current], indent_string);
-		//Unexpected indent
+		#Unexpected indent
 		if indent > previous_indent && !expected_indent
 			throw "Unexpected indent at line " + file_line;
-		//Lack of necessary indent
+		#Lack of necessary indent
 		if indent <= previous_indent && expected_indent
 			throw "Expected indent at line " + file_line;
 		for var i = 0; i < previous_indent - indent; i++
 			result += multiply_string('\t', indent - i) + "}\n";
 		previous_indent = indent;
-		//Remove excess whitespace and comments
+		#Remove excess whitespace and comments
 		var line = lines[current].trim().replace(/\\.*\n/g, '');
 		sublines = 0;
 		while line.indexOf('\\\r') > 0
 			sublines += 1;
 			line = line.replace('\\\r', '');
 		result += multiply_string(indent_string, indent);
-		//Function declaration
+		#Function declaration
 		if line.startsWith('func')
 			var name = "", parameters = "";
-			//Extract name
+			#Extract name
 			name = /^func ([A-Za-z_$][A-Za-z0-9_$]*)/.exec(line);
 			if !name || !name[1]
 				throw "Illegal function name at line " + file_line;
 			name= name[1]
-			//Extract parameters
+			#Extract parameters
 			parameters = /^func [A-Za-z_$][A-Za-z0-9_$]*[\t ]*[(](.*)[)]/.exec(line)
 			if !parameters
 				throw "Illegal parameter construction at line " + file_line;
@@ -90,13 +101,15 @@ func compile(string, indent_string)
 			result += line + '\n';
 			expected_indent = false;
 		file_line += 1 + sublines;
+	while string_literals.length > 0
+		result = result.replace('%%' + string_literals.length, string_literals.pop());
 	return result;
 compiler.compile = compile
 func isle_eval(string)
 	eval(this.compile(string))
 compiler.eval = isle_eval
-//Quick testing code
+#Quick testing code
 var fs = require('fs');
 var contents = fs.readFileSync('src/compiler.is', 'utf8');
 var compiled = compiler.compile(contents, '\t');
-fs.writeFileSync('../compiler.js', compiled, 'utf8')
+fs.writeFileSync('bin/compiler.js', compiled, 'utf8')
