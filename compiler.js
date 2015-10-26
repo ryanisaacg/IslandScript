@@ -73,6 +73,11 @@ compiler.compile = function(string, indent_string) {
 			if(!clause) throw "Malformed while statement at line " + current;
 			result += "while (" + clause[1] + ") {\n"
 			expected_indent = true;
+		} else if (line.startsWith('for')) {
+			var params = /for[\t ]+([^;]+);[\t ]*([^;]+);[\t ]*([^;]+)/.exec(line);
+			if(!params) throw "Malformed for statement at line " + file_line;
+			result += "for (" + params[1] + ";" + params[2] + ";" + params[3] + ") {";
+			expected_indent = true;
 		} else {
 			result += line + '\n';
 			expected_indent = false;
