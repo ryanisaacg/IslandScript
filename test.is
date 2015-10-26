@@ -9,3 +9,4 @@ func test()
 				
 		return doTest
 test()()
+console.log("Some testing")
