@@ -1,6 +1,6 @@
-- ~~Indent and line based syntax
+- ~~Indent and line based syntax~~
 
-	- \ for line continuation if you're a terrible person~~
+	- ~~\ for line continuation if you're a terrible person~~
 
 - Type System:
 
