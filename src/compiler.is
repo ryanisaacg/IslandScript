@@ -17,6 +17,23 @@ func multiply_string(string, amt)
 	for var i = 0; i < amt; i++
 		result += string;
 	return result;
+func lookup(token, symbols)
+	for var i = symbols.length; i > 0; i--
+		if symbols[i][token]
+			return symbols[i][token]
+func type(token, symbols)
+	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([/][^/\n]*[/])/, number_regex = /-?\d+(?:.\d+)?/
+	var new_regex = /[\t ]*new[\t ]+([A-Za-z_$][A-Za-z0-9_$]+)/
+	if number_regex.test(token)
+		return 'num'
+	elif string_regex.test(token) || char_regex.test(token)
+		return 'str'
+	elif regex_regex.test(token)
+		return 'RegExp'
+	elif new_regex.test(token)
+		return new_regex.exec(token)[1]
+	else
+		return lookup(token, symbols)
 func compile(string, indent_string)
 	#Take out all literals so they are not manipulated as code
 	var string_literals = []
