@@ -22,6 +22,32 @@ function multiply_string (string, amt) {
 	}
 	return result;
 }
+function lookup (token, symbols) {
+	for (var i = symbols.length;i > 0;i--) {
+		if (symbols[i][token]) {
+			return symbols[i][token]
+}
+}
+}
+function type (token, symbols) {
+	var string_regex = /(["][^"\n]*["])/, char_regex = /(['][^'\n]*['])/, regex_regex = /([/][^/\n]*[/])/, number_regex = /-?\d+(?:.\d+)?/
+	var new_regex = /[\t ]*new[\t ]+([A-Za-z_$][A-Za-z0-9_$]+)/
+	if (number_regex.test(token)) {
+		return 'num'
+	}
+	else if (string_regex.test(token) || char_regex.test(token)) {
+		return 'str'
+	}
+	else if (regex_regex.test(token)) {
+		return 'RegExp'
+	}
+	else if (new_regex.test(token)) {
+		return new_regex.exec(token)[1]
+	}
+	 else {
+		return lookup(token, symbols)
+}
+}
 function compile (string, indent_string) {
 	//Take out all literals so they are not manipulated as code
 	var string_literals = []
